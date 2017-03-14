@@ -28,27 +28,43 @@ categories:
 ### 前向传播
   好了，一切就绪，我们要开始算了！怎么算呢，分为2步，第1步是简单的加权相加或者叫做线性回归，第2步是代入一个激活函数，激活函数的作用是将线性函数表达为非线性函数，它会把值挤压进一个(0,1)区间的范围，同时可以反应出条件概率，激活函数可以使用sigmoid函数,exp函数表示了以e为底的指数函数:
   $$f(z)=\frac {1} {1+exp^{(-z)}}$$
+```
+function sigmoid(z){
+  return 1 / (1 + Math.exp(-z));
+}
+```
   第1步，计算线性回归：
 $$n_h1=i_1 × w_1 + i_2 × w_2 + b_1 × 1=0.15 × 0.1 + 0.1 × 0.2 + 0.35 × 1=0.385$$
+```
+ nH[0]=i[0] * w[0] + i[1] * w[1] + b[0] * 1;
+```
   第2步，激活：
   $$out_h1=\frac {1} {1+exp^{(-n_h1)}}=\frac {1} {1+exp^{(-0.385)}}=0.595078473866134$$
+```
+ outH[0]=sigmoid(nH[0]);
+```
   现在我们就计算出了h1节点的值，用相同的方法，我们计算出h2节点：
-  $$out_h2=0.5980868603322034$$
+  <center>$out_h2=0.5980868603322034$</center>
   同样的我们也可以算出o1,o2:
-  $$out_o1=0.7286638276265998$$
-  $$out_o2=0.751601224586807$$
-  可以看到计算的结果和我们设定的结果有很大的误差，没关系，接下来我们就通过一定的方法来减小这个误差。
+  <center>
+  $out_o1=0.7286638276265998$，$out_o2=0.751601224586807$  
+  </center>
+  可以看到计算的结果和我们设定的结果(0.01,0.99)有很大的误差，没关系，接下来我们需要减小这个误差。
 ### 计算总误差
-
+  误差计算通过平方误差函数为每个节点计算误差,然后将这些误差相加计算总误差:
+  $$E_total=\sum \frac 1 2(target - current )^2$$
+  
 <!--$$x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}$$-->
 <!--\\(x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}\\)-->
 
-```
-hello world
-```
 
 
 
 
 
-<script type="text/javascript" src="/js/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async src="/js/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
