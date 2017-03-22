@@ -15,13 +15,13 @@ categories:
    
 
 <h2 id='id2'>神经网络</h2>
-  &emsp;&emsp;本篇文章的主题就是人工神经网络中的反向传播算法（Back Propagation Algorithm，BP算法）。反向传播算法是实现人工神经网络（Neural Networks，NNs）中非常重要的技术，就是它让神经网络变的“智能”。
-  首先神经网络的模型是这个样子的，这是一个简化了的神经网络结构，图中球模拟了神经元的细胞，线模拟了神经元的突触，简而言之它在用数学模型模拟我们的大脑：
+  &emsp;&emsp;本篇文章的主题就是人工神经网络中的反向传播算法（Back Propagation Algorithm，BP算法）。反向传播算法是实现人工神经网络（Neural Networks，NNs）中非常重要的技术，就是它让神经网络变的“智能”，本文将会利用最简单的NNs模型来模拟整个反向传播算法，并同时使用JavaScript来实现整个过程，文章的最后会提供程序给大家交流，这里需要声明一点，这个程序只是为了演示算法。好了，开始吧。
+  &emsp;&emsp;首先神经网络的模型是这个样子的，这是一个简化到不能在简化的神经网络结构，图中的球模拟了神经元的细胞，线模拟了神经元的突触，简而言之它在用数学模型模拟我们的大脑：
 
 <center> <img src="/images/bp/bp1.svg"> </center>
 
   
-  &emsp;&emsp;在左侧有i1,i2，表示输入层；最右侧有o1,o2,表示输出层。当我们在训练机器学习的时候，会把输入值和输出值都设定好，好比说，i1=0.15，i2=0.10；计算结果应该是o1=0.01,o2=0.99，如果训练是成功的，那当我输入相同的输入值时，结果应该也是相同的。是不是有点像我们在构造一个函数，而这个函数我们并不能看到，所以很多人说神经网络是一个黑盒模型。所以，我们需要在中间加入一层来描述其中转换的过程，由于是不可见的，这层叫隐含层h1,h2。现在我们需要初始化节点之间的连线，为这些连线加上随机的权值。这些初始化的权值会在之后的计算中被更新，事实上这些权值就是描述这个机器思考的模型。在计算的过程中，我们还会用到b1,b2，这称为偏置项，值永远是1，权值可以自由设置，这里我们设b1权值为0.35，b2权值为0.60。OK,现在这个模型变成了这样：
+  &emsp;&emsp;在左侧有i1,i2，表示输入层；最右侧有o1,o2,表示输出层。当我们在训练机器学习的时候，会把输入值和输出值都设定好，好比说，i1=0.15，i2=0.10；计算结果应该是o1=0.01,o2=0.99，如果训练是成功的，那当我输入相同的输入值时，结果应该也是相同的。是不是有点像我们在构造一个函数，而这个函数的计算过程我们并不能看到，这也是为什么很多人说神经网络是一个黑盒模型。我们需要在中间加入一层来描述其中转换的过程，由于是不可见的，这层叫隐含层h1,h2。现在我们需要初始化节点之间的连线，为这些连线加上随机的权值。这些初始化的权值会在之后的计算中被更新，事实上这些权值就是描述这个机器思考的模型。在计算的过程中，我们还会用到b1,b2，这称为偏置项，值永远是1，权值可以自由设置，这里我们设b1权值为0.35，b2权值为0.60。OK,现在这个模型变成了这样：
   
 <center> <img src="/images/bp/bp2.svg"> </center>
 
@@ -33,36 +33,47 @@ categories:
 
 <center> <img src="/images/bp/f1.gif"> </center>
     ```
+//激活函数
 function sigmoid(z) {
- 	return 1 / (1 + Math.exp(-z));
+	return 1 / (1 + Math.exp(-z));
 }
     ```
 
   &emsp;&emsp;第1步，计算线性回归：    
-<center> <img src="/images/bp/f2.gif"> </center>
-    ```
-    h[0]=i[0]*w[0] + i[1]*w[1] + b[0]*1;
-    ```
-
+<center> <img src="/images/bp/f2.gif"> </center>  
   &emsp;&emsp;第2步，激活：
-<center> <img src="/images/bp/f3.svg"> </center>
-    ```
-    outH[0]=sigmoid(h[0]);
-    ```
+<center> <img src="/images/bp/f3.svg"> </center>   
   &emsp;&emsp;现在我们就计算出了h1节点的值，用相同的方法，我们计算出h2，o1，o2节点:
 <center>
 <img src="/images/bp/f4.gif">
 <img src="/images/bp/f5.gif">
 <img src="/images/bp/f6.gif">
 </center>
+  ```
+  //前向传播
+  function forward() {
+    //隐含层
+    for (var x = 0; x < i.length; x++) {
+      h[x] = sigmoid(i[0] * w[0][x * v] + i[1] * w[0][x * v + 1] + b[0]);
+    }
+    //输出层
+    for (var y = 0; y < i.length; y++) {
+      o[y] = sigmoid(h[0] * w[1][y * v] + h[1] * w[1][y * v + 1] + b[1]);
+    }
+  }
+  ```
   &emsp;&emsp;可以看到计算的结果和我们设定的结果(0.01,0.99)有很大的误差，这很大程度上是由于权值初始化的时候，接下来我们需要减小这个误差。  
 <h3 id='id4'>计算总误差</h3>
   &emsp;&emsp;误差计算通过平方误差函数为每个节点计算误差，然后将这些误差相加计算总误差:
   
 <center><img src="/images/bp/f7.gif"></center>
     ```
-    function squareErr(target,current){
-        return 0.5 * Math.pow((target - current),2);
+    //计算总误差
+    function totalError() {
+      for (var x = 0; x < t.length; x++) {
+        e[x] = squareErr(t[x], o[x]);
+        te += e[x];
+      }
     }
     ```
   &emsp;&emsp;我们分别计算o1，o2的误差值，并将他们相加:
@@ -85,11 +96,6 @@ function sigmoid(z) {
 <center>
 <img src="/images/bp/f13.gif">
 </center>
-```
-  function back_step1(target,current){
-      return -1 * ( target - current);
-  }
-```
  &emsp;&emsp;第2部分，这里其实就是对于激活函数来说，o1输出对它的影响，由于激活函数是sigmoid，其求导公式推导如下：
 <center>
 <img src="/images/bp/f14.gif">
@@ -98,11 +104,6 @@ function sigmoid(z) {
 <center>
 <img src="/images/bp/f15.gif">
 </center>
-```
-  function back_step2(target){
-      return target * (1- target);
-  }
-```
   &emsp;&emsp;第3部分，w5对于线性方程的影响，其求导结果就是w5的斜率：
 <center>
 <img src="/images/bp/f16.gif">
@@ -111,7 +112,63 @@ function sigmoid(z) {
 <center>
 <img src="/images/bp/f17.gif">
 </center>
-  &emsp;&emsp;我们现在要对w5这项权值做出调整，
+  &emsp;&emsp;我们现在要对w5这项权值做出调整，调整的依据是刚刚算出的误差值，通过加权的方式去调整，我们需要设定一个学习率来衡量误差对于调整过程的比例，本例中设为0.5：
+<center>
+<img src="/images/bp/f18.gif">
+</center>  
+  &emsp;&emsp;神奇的事情发生了，可以看到w5的权值由原来的0.3调整为0.25772292463736585，从调整的幅度上来看好像还挺有道理的，我们用相同的方法把所有的权值都调整一遍：
+
+``` 
+//反向传播第一层
+function backward1() {	
+	for (var y = 0; y < t.length; y++) {
+		for (var x = 0; x < h.length; x++) {
+			var selfEffect = -1 * (t[y] - o[y]) * o[y] * (1 - o[y]) * h[x];
+			nW[1][x + y * v] = w[1][x + y * v] - lr * selfEffect;
+			console.info('w' + parseInt(5 + x + y * v) + "权重变化: " + w[1][x + y * v] + " => " + nW[1][x + y * v]);
+		}
+	}
+}
+---------------
+w5权重变化: 0.3 => 0.25772292463736585
+w6权重变化: 0.35 => 0.3075091952101869
+w7权重变化: 0.4 => 0.413242963882813
+w8权重变化: 0.45 => 0.46330991295770874
+```
+
+  &emsp;&emsp;OK,到目前为止，我们已经成功一半了，接下来需要更新w1~w4的权值，以w1为例，我们需要算出w1对于总误差的影响，依然通过链式法则求偏导：
+<center>
+<img src="/images/bp/f19.gif">
+</center>  
+  &emsp;&emsp;这里有一个情况出现了，我们的算式里第一项是描述h1节点对于总误差的影响，如何描述这个影响，直接求求不出啊？冷静，思路依然是将问题细分，我们可以看到模型中这个h1节点可以影响o1,也可以影响o2，所以这个过程可以看做o1,o2对h1的影响之和，下面我们开始计算：
+<center>
+<img src="/images/bp/f20.gif">
+</center>
+  &emsp;&emsp;第1部分，这一部分其实又可以分为2个小部分，我们以计算o1例。在计算的时候有一个技巧，o1输出对于E0的影响其实就等于o1输出对于E_total的影响，所以可以用之前算过的值直接代入；由于out_o1是线性方程，h1对于out_o1的影响就等于其斜率w5：
+<center>
+
+<img src="/images/bp/f21.gif">
+<img src="/images/bp/f22.gif">
+</center>
+  &emsp;&emsp;代入之前求得的值就可以求解第1部分：
+<center>
+<img src="/images/bp/f23.gif">
+<img src="/images/bp/f24.gif">
+<img src="/images/bp/f25.gif">
+</center>
+  &emsp;&emsp;第2部分，就是对sigmoid函数求导，代入可以求解：
+<center>
+<img src="/images/bp/f26.gif">
+</center>
+  &emsp;&emsp;第3部分，是对线性函数求导，求解：
+<center>
+<img src="/images/bp/f27.gif">
+</center>
+  &emsp;&emsp;大功告成，我们将3部分数据相乘，并加上学习率，最终求解：
+<center>
+<img src="/images/bp/f28.gif">
+<img src="/images/bp/f29.gif">
+</center>
 <!-- out_h1=0.595078473866134-->
 <!-- out_o1=0.7286638276265998-->
 <!--$$n_{h1}=i_1 * w_1 + i_2 * w_2 + b_1 * 1=0.15 * 0.1 + 0.1 * 0.2 + 0.35 * 1=0.385$$-->
@@ -123,4 +180,6 @@ function sigmoid(z) {
 <!--\frac {\partial E_{total}} {\partial out_{o1}} =\frac {\partial (\frac 1 2(o_1 - out_{o1} )^2 + \frac 1 2(o_2 - out_{o2} )^2) } {\partial out_{o1}}=2 * \frac 1 2 (o_1 - out_{o1})^{2-1} * -1 + 0-->
 <!--\frac {\partial out_{o1}} {\partial n_{o1}} =\frac {\partial (\frac {1} {1+exp^{(-n_o1)}})} {\partial n_{o1}} = -->
 <!--f(x)'={(\frac 1 {1+exp^{-x}})}'={(\frac {exp^x} {1+exp^{x}})}'=\frac {exp^x}{(exp^x + 1)^2}=f(x)*(1-f(x))-->
-<!-- 0.7186638276265997 * 0.19771285393515267 * 0.595078473866134-->
+<!--\frac {\partial E_{total}} {\partial w_{1}} = ( \frac {\partial E_{o1}} {\partial out_{h1}} + \frac {\partial E_{o2}} {\partial out_{h1}})*\frac {\partial out_{h1}} {\partial n_{h1}} *\frac {\partial n_{h1}} {\partial w_{1}} -->
+<!--\frac {\partial E_{o1}} {\partial out_{h1}} =\frac {\partial E_{o1}} {\partial n_{h1}} * \frac {\partial n_{h1}} {\partial out_{h1}} = \frac {\partial E_{total}} {\partial out_{o1}} * \frac {\partial out_{o1}} {\partial n_{h1}}* \frac {\partial n_{h1}} {\partial out_{h1}}-->
+<!--\frac {\partial E_{o2}} {\partial out_{h1}} =0.7186638276265997 * 0.19771285393515267 * 0.3=0.0426267229140047 -->

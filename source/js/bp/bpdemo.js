@@ -13,6 +13,11 @@ var w = [
 	[0.1, 0.2, 0.15, 0.25],
 	[0.3, 0.35, 0.4, 0.45]
 ];
+//调整之后的权值
+var nW = [
+	[],
+	[]
+];
 //误差
 var e = [];
 //总误差
@@ -54,22 +59,43 @@ function totalError() {
 
 //反向传播第一层
 function backward1() {
-	var newWeight = [];
 	for (var y = 0; y < t.length; y++) {
 		for (var x = 0; x < h.length; x++) {
-			console.info(o[y] * (1 - o[y]) );
 			var selfEffect = -1 * (t[y] - o[y]) * o[y] * (1 - o[y]) * h[x];
-			newWeight[x] = w[1][x + y * v] - lr * selfEffect;
-			console.info('w' + parseInt(5 + x + y * v) + "权重变化: " + w[1][x + y * v] + " => " + newWeight[x]);
+			nW[1][x + y * v] = w[1][x + y * v] - lr * selfEffect;
+			console.info('w' + parseInt(5 + x + y * v) + "权重变化: " + w[1][x + y * v] + " => " + nW[1][x + y * v]);
 		}
 	}
+}
+
+//反向传播第二层
+function backward2() {
+	for (var y = 0; y < h.length; y++) {
+		var f_1=0;
+		for (var x = 0; x < o.length; x++) {
+			f_1 += -1 * (t[x] - o[x]) * o[x] * (1 - o[x]) * w[1][x];
+			// var step2 = -1 * (t[1] - o[1]) * o[1] * (1 - o[1]) * w[1][1];
+		}
+		var f_2=h[y] * (1 - h[y]);
+		var f_3=i[y];
+		console.info(f_1*f_2*f_3);
+	}
+
+	// var section1 = step1 + step2;
+	// var section2 = h[0] * (1 - h[0]);
+	// var section3 = i[0];
+	// var all = section1 * section2 * section3;
+	// var nw = 1 - lr * all;
+	// console.info(nw);
+
 }
 
 forward();
 totalError();
 backward1();
+backward2();
 
-console.info(h);
-console.info(o);
+// console.info(h);
+// console.info(o);
 // console.info(te);
-// console.info(newWeight);
+// console.info(nW);
