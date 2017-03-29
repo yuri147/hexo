@@ -7,7 +7,7 @@ categories:
   - Tech
 ---
 <h2 id='id1' >人工智能</h2>
-  &emsp;&emsp;目前最火的技术莫过于人工智能，或者说机器学习。从IBM Watson到Google AlphaGo,人工智能仿佛已经冲出了实验室，在实际生活中发挥作用。面对如此高大上的技术，普通老百姓要如何去看待它，理解它的本质呢?沉着冷静别惊慌，本文将尽可能给你一个答案。
+  &emsp;&emsp;目前最火的技术莫过于人工智能，或者说机器学习。从IBM Watson到Google AlphaGo,人工智能仿佛已经冲出了实验室，在实际生活中发挥作用。面对如此高大上的技术，普通老百姓要如何去看待它，理解它呢?
   
   &emsp;&emsp;首先要知道机器学习的本质是算法，这里就会有好几种，比如：神经网络、支持向量机、朴素贝叶斯等等一堆。虽然算法很多，但他们主要解决的都是同一个问题---分类预测问题。为什么分类预测问题这么重要？因为机器学习的本质是重现人类学习的过程，这个过程可以大致分为两部分：1.定义一个事物，2.判断一个事物。如果一个机器可以对一个事物进行判断，判断的结果与人类的判断相似，那它近似的就是一个人工智能。
 
@@ -15,7 +15,8 @@ categories:
    
 
 <h2 id='id2'>神经网络</h2>
-  &emsp;&emsp;本篇文章的主题就是人工神经网络中的反向传播算法（Back Propagation Algorithm，BP算法）。反向传播算法是实现人工神经网络（Neural Networks，NNs）中非常重要的技术，就是它让神经网络变的“智能”，本文将会利用最简单的NNs模型来模拟整个反向传播算法，并同时使用JavaScript来实现整个过程，文章的最后会提供程序给大家交流，这里需要声明一点，这个程序只是为了演示算法。好了，开始吧。
+  &emsp;&emsp;本篇文章的主题就是人工神经网络中的反向传播算法（Back Propagation Algorithm，BP算法）。反向传播算法是实现人工神经网络（Neural Networks，NNs）中非常重要的技术，就是它让神经网络变的“智能”，本文将会利用最简单的NNs模型来模拟整个反向传播算法，并同时使用JavaScript来实现整个过程，文章的最后会提供该例程序。这里需要声明一点，这个程序只是为了演示算法。好了，开始吧。
+
   &emsp;&emsp;首先神经网络的模型是这个样子的，这是一个简化到不能在简化的神经网络结构，图中的球模拟了神经元的细胞，线模拟了神经元的突触，简而言之它在用数学模型模拟我们的大脑：
 
 <center> <img src="/images/bp/bp1.svg"> </center>
@@ -222,22 +223,7 @@ console.info('最终预测值：'+final_o);
 -----------------------
 最终预测值：0.015360963767399535,0.9845412722122693
 ```
-  &emsp;&emsp;最终结果已经非常接近我们的预期值。这里如果一味的增加训练次数会产生边际效应，最终的预测值会越来越慢的接近目标值。
-<h3 id='id6'>结语</h3>
+  &emsp;&emsp;最终结果已经非常接近我们的预期值。但是这里如果一味的增加训练次数会产生边际效应，最终的预测值会越来越慢的接近目标值。
+<h2 id='id6' >结语</h2>
   &emsp;&emsp;最终我们模拟了最为简单的神经网络结构，可以想像如果增加输入层维度，并且增加隐含层层数，模型的拟合度会越来越高，计算量也会指数倍增长。
-  &emsp;&emsp;本例代码：
-<!-- out_h1=0.595078473866134-->
-<!-- out_o1=0.7286638276265998-->
-<!--$$n_{h1}=i_1 * w_1 + i_2 * w_2 + b_1 * 1=0.15 * 0.1 + 0.1 * 0.2 + 0.35 * 1=0.385$$-->
-<!--$$out_{h1}=\frac {1} {1+exp^{(-n_h1)}}=\frac {1} {1+exp^{(-0.385)}}=0.595078473866134$$-->
-<!--$$E_{o1}=\frac 1 2(o1 - out_{o1} )^2= \frac 1 2(0.01 - 0.7286638276265998)^2=0.25823884856945756 $$-->
-<!--$$E_{o2}=\frac 1 2(o2 - out_{o2} )^2= \frac 1 2(0.99 - 0.751601224586807)^2=0.028416988059255015 $$-->
-<!--$$E_{total}=(E_{o1} + E_{o2})=(0.25823884856945756+0.028416988059255015)=0.2866558366287126 $$-->
-<!--\frac {\partial E_{total}} {\partial w_{5}} =\frac {\partial E_{total}} {\partial out_{o1}} * \frac {\partial out_{o1}} {\partial n_{1}} *{\partial n_{1}} {\partial w_{5}} -->
-<!--\frac {\partial E_{total}} {\partial out_{o1}} =\frac {\partial (\frac 1 2(o_1 - out_{o1} )^2 + \frac 1 2(o_2 - out_{o2} )^2) } {\partial out_{o1}}=2 * \frac 1 2 (o_1 - out_{o1})^{2-1} * -1 + 0-->
-<!--\frac {\partial out_{o1}} {\partial n_{o1}} =\frac {\partial (\frac {1} {1+exp^{(-n_o1)}})} {\partial n_{o1}} = -->
-<!--f(x)'={(\frac 1 {1+exp^{-x}})}'={(\frac {exp^x} {1+exp^{x}})}'=\frac {exp^x}{(exp^x + 1)^2}=f(x)*(1-f(x))-->
-<!--\frac {\partial E_{total}} {\partial w_{1}} = ( \frac {\partial E_{o1}} {\partial out_{h1}} + \frac {\partial E_{o2}} {\partial out_{h1}})*\frac {\partial out_{h1}} {\partial n_{h1}} *\frac {\partial n_{h1}} {\partial w_{1}} -->
-<!--\frac {\partial E_{o1}} {\partial out_{h1}} =\frac {\partial E_{o1}} {\partial n_{h1}} * \frac {\partial n_{h1}} {\partial out_{h1}} = \frac {\partial E_{total}} {\partial out_{o1}} * \frac {\partial out_{o1}} {\partial n_{h1}}* \frac {\partial n_{h1}} {\partial out_{h1}}-->
-<!--\frac {\partial E_{o2}} {\partial out_{h1}} =0.7186638276265997 * 0.19771285393515267 * 0.3=0.0426267229140047 -->
----
+  &emsp;&emsp;本例代码：https://github.com/yuri147/hexo/blob/master/source/js/bp/bpdemo.js

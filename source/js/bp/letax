@@ -1,0 +1,16 @@
+---
+<!-- out_h1=0.595078473866134-->
+<!-- out_o1=0.7286638276265998-->
+<!--$$n_{h1}=i_1 * w_1 + i_2 * w_2 + b_1 * 1=0.15 * 0.1 + 0.1 * 0.2 + 0.35 * 1=0.385$$-->
+<!--$$out_{h1}=\frac {1} {1+exp^{(-n_h1)}}=\frac {1} {1+exp^{(-0.385)}}=0.595078473866134$$-->
+<!--$$E_{o1}=\frac 1 2(o1 - out_{o1} )^2= \frac 1 2(0.01 - 0.7286638276265998)^2=0.25823884856945756 $$-->
+<!--$$E_{o2}=\frac 1 2(o2 - out_{o2} )^2= \frac 1 2(0.99 - 0.751601224586807)^2=0.028416988059255015 $$-->
+<!--$$E_{total}=(E_{o1} + E_{o2})=(0.25823884856945756+0.028416988059255015)=0.2866558366287126 $$-->
+<!--\frac {\partial E_{total}} {\partial w_{5}} =\frac {\partial E_{total}} {\partial out_{o1}} * \frac {\partial out_{o1}} {\partial n_{1}} *{\partial n_{1}} {\partial w_{5}} -->
+<!--\frac {\partial E_{total}} {\partial out_{o1}} =\frac {\partial (\frac 1 2(o_1 - out_{o1} )^2 + \frac 1 2(o_2 - out_{o2} )^2) } {\partial out_{o1}}=2 * \frac 1 2 (o_1 - out_{o1})^{2-1} * -1 + 0-->
+<!--\frac {\partial out_{o1}} {\partial n_{o1}} =\frac {\partial (\frac {1} {1+exp^{(-n_o1)}})} {\partial n_{o1}} = -->
+<!--f(x)'={(\frac 1 {1+exp^{-x}})}'={(\frac {exp^x} {1+exp^{x}})}'=\frac {exp^x}{(exp^x + 1)^2}=f(x)*(1-f(x))-->
+<!--\frac {\partial E_{total}} {\partial w_{1}} = ( \frac {\partial E_{o1}} {\partial out_{h1}} + \frac {\partial E_{o2}} {\partial out_{h1}})*\frac {\partial out_{h1}} {\partial n_{h1}} *\frac {\partial n_{h1}} {\partial w_{1}} -->
+<!--\frac {\partial E_{o1}} {\partial out_{h1}} =\frac {\partial E_{o1}} {\partial n_{h1}} * \frac {\partial n_{h1}} {\partial out_{h1}} = \frac {\partial E_{total}} {\partial out_{o1}} * \frac {\partial out_{o1}} {\partial n_{h1}}* \frac {\partial n_{h1}} {\partial out_{h1}}-->
+<!--\frac {\partial E_{o2}} {\partial out_{h1}} =0.7186638276265997 * 0.19771285393515267 * 0.3=0.0426267229140047 -->
+---
