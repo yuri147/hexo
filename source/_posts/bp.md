@@ -34,7 +34,7 @@ categories:
 <center> <img src="/images/bp/f1.gif"> </center>
     ```
 //激活函数
-function sigmoid(z) {
+this.sigmoid=function(z) {
 	return 1 / (1 + Math.exp(-z));
 }
     ```
@@ -51,7 +51,7 @@ function sigmoid(z) {
 </center>
   ```
   //前向传播
-  function forward() {
+  this.forward=function() {
     //隐含层
     for (var x = 0; x < i.length; x++) {
       h[x] = sigmoid(i[0] * w[0][x * v] + i[1] * w[0][x * v + 1] + b[0]);
@@ -69,7 +69,7 @@ function sigmoid(z) {
 <center><img src="/images/bp/f7.gif"></center>
     ```
     //计算总误差
-    function totalError() {
+    this.totalError=function() {
       for (var x = 0; x < t.length; x++) {
         e[x] = squareErr(t[x], o[x]);
         te += e[x];
@@ -84,7 +84,7 @@ function sigmoid(z) {
 <img src="/images/bp/f10.gif">
 </center>
 <h3 id='id5'>反向传播</h3>
-  &emsp;&emsp;现在我们从模型的右侧开始向左侧计算，目标是要使得总误差值变小。我们首先计算w5这一路，这里需要一个方法来计算w5对总误差的印象，刚好导数的意义是描述参数变化对函数造成影响的变化率，或者叫斜率。所以我们想知道w5对总误差带来的变化率可以通过求w5的偏导来计算。然而单纯去算是算不出的，要使用连式法则来分解计算步骤（宏观上看这些中间变量都可以被约分约掉）,下面我们就将这个问题分为等式右侧的3部分去求解：
+  &emsp;&emsp;现在我们从模型的右侧开始向左侧计算，目标是要使得总误差值变小。我们首先计算w5这一路，这里需要一个方法来计算w5对总误差的影响，刚好导数的意义是描述参数变化对函数造成影响的变化率，或者叫斜率。所以我们想知道w5对总误差带来的变化率可以通过求w5的偏导来计算。然而单纯去算是算不出的，要使用连式法则来分解计算步骤（宏观上看这些中间变量都可以被约分约掉）,下面我们就将这个问题分为等式右侧的3部分去求解：
 <center>
 <img src="/images/bp/f11.gif">
 </center>
@@ -120,7 +120,7 @@ function sigmoid(z) {
 
 ``` 
 //反向传播第一层
-function backward1() {	
+this.backward1 =function() {	
 	for (var y = 0; y < t.length; y++) {
 		for (var x = 0; x < h.length; x++) {
 			var selfEffect = -1 * (t[y] - o[y]) * o[y] * (1 - o[y]) * h[x];
@@ -140,7 +140,7 @@ w8权重变化: 0.45 => 0.46330991295770874
 <center>
 <img src="/images/bp/f19.gif">
 </center>  
-  &emsp;&emsp;这里有一个情况出现了，我们的算式里第一项是描述h1节点对于总误差的影响，如何描述这个影响，直接求求不出啊？冷静，思路依然是将问题细分，我们可以看到模型中这个h1节点可以影响o1,也可以影响o2，所以这个过程可以看做o1,o2对h1的影响之和，下面我们开始计算：
+  &emsp;&emsp;这里有一个情况出现了，我们的算式里第一项是描述h1节点对于总误差的影响，如何描述这个影响，直接求求不出啊？冷静，思路依然是将问题细分，我们可以看到模型中这个h1节点可以影响o1,也可以影响o2，所以这个过程可以看做h1对o1,o2的影响之和，下面我们开始计算：
 <center>
 <img src="/images/bp/f20.gif">
 </center>
@@ -169,6 +169,63 @@ w8权重变化: 0.45 => 0.46330991295770874
 <img src="/images/bp/f28.gif">
 <img src="/images/bp/f29.gif">
 </center>
+  &emsp;&emsp;我们将其余的权重都求解：
+```
+//反向传播第二层
+this.backward2 = function() {
+	var f_1 = [];
+	var f_2 = 0;
+	var f_3 = 0;
+	var _f_1 = -1 * (t[0] - o[0]) * o[0] * (1 - o[0]) * w[1][0];
+	_f_1 += -1 * (t[1] - o[1]) * o[1] * (1 - o[1]) * w[1][2];
+	f_1.push(_f_1);
+	_f_1 = -1 * (t[0] - o[0]) * o[0] * (1 - o[0]) * w[1][1];
+	_f_1 += -1 * (t[1] - o[1]) * o[1] * (1 - o[1]) * w[1][3];
+	f_1.push(_f_1);
+	for (var y = 0; y < h.length; y++) {
+		f_2 = h[y] * (1 - h[y]);
+		for (var z = 0; z < i.length; z++) {
+			f_3 = i[z];
+			nW[0][y + z * v] = w[0][y + z * v] - lr * (f_1[y] * f_2 * f_3);
+			console.info('w' + parseInt(y + z * v) + "权重变化: " + w[1][y + z * v] + " => " + nW[1][y + z * v]);
+		}
+	}
+	w = nW;
+};
+--------------------
+w0权重变化: 0.3 => 0.25772292463736585
+w2权重变化: 0.4 => 0.413242963882813
+w1权重变化: 0.35 => 0.3075091952101869
+w3权重变化: 0.45 => 0.46330991295770874
+```
+
+
+
+ &emsp;&emsp;目前为止，我们已经完成了训练，接下来我们来验证一下训练的成果。仍然将[0.15,0.1]作为输入层输入，我们看到通过新的权重计算后得到的结果是:
+```
+预测值变化：0.7286638276265998,0.751601224586807 => 0.7185477013468267,0.7545430129300831
+```
+ &emsp;&emsp;可以观察到o1越来越接近0.01,o2越来越接近0.99，OK，我们来循环10000次，观察训练后的结果：
+```
+var test = new Neural();
+var final_o=[];
+for (var i = 0; i < 10000; i++) {
+	test.forward();
+	var old_o=[].concat(test.o);
+	test.totalError();
+	test.backward1();
+	test.backward2();
+	test.forward();
+	final_o=[].concat(test.o);	
+}
+console.info('最终预测值：'+final_o);
+-----------------------
+最终预测值：0.015360963767399535,0.9845412722122693
+```
+  &emsp;&emsp;最终结果已经非常接近我们的预期值。这里如果一味的增加训练次数会产生边际效应，最终的预测值会越来越慢的接近目标值。
+<h3 id='id6'>结语</h3>
+  &emsp;&emsp;最终我们模拟了最为简单的神经网络结构，可以想像如果增加输入层维度，并且增加隐含层层数，模型的拟合度会越来越高，计算量也会指数倍增长。
+  &emsp;&emsp;本例代码：
 <!-- out_h1=0.595078473866134-->
 <!-- out_o1=0.7286638276265998-->
 <!--$$n_{h1}=i_1 * w_1 + i_2 * w_2 + b_1 * 1=0.15 * 0.1 + 0.1 * 0.2 + 0.35 * 1=0.385$$-->
@@ -183,3 +240,4 @@ w8权重变化: 0.45 => 0.46330991295770874
 <!--\frac {\partial E_{total}} {\partial w_{1}} = ( \frac {\partial E_{o1}} {\partial out_{h1}} + \frac {\partial E_{o2}} {\partial out_{h1}})*\frac {\partial out_{h1}} {\partial n_{h1}} *\frac {\partial n_{h1}} {\partial w_{1}} -->
 <!--\frac {\partial E_{o1}} {\partial out_{h1}} =\frac {\partial E_{o1}} {\partial n_{h1}} * \frac {\partial n_{h1}} {\partial out_{h1}} = \frac {\partial E_{total}} {\partial out_{o1}} * \frac {\partial out_{o1}} {\partial n_{h1}}* \frac {\partial n_{h1}} {\partial out_{h1}}-->
 <!--\frac {\partial E_{o2}} {\partial out_{h1}} =0.7186638276265997 * 0.19771285393515267 * 0.3=0.0426267229140047 -->
+---
