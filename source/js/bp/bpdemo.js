@@ -32,12 +32,12 @@ var Neural = function() {
 	//激活函数
 	this.sigmoid = function(z) {
 		return 1 / (1 + Math.exp(-z));
-	}
+	};
 
 	//平方误差函数
 	this.squareErr = function(target, current) {
 		return 0.5 * Math.pow((target - current), 2);
-	}
+	};
 
 	//前向传播
 	this.forward = function() {
@@ -50,7 +50,7 @@ var Neural = function() {
 			o[y] = self.sigmoid(h[0] * w[1][y * v] + h[1] * w[1][y * v + 1] + b[1]);
 		}
 		self.o=o;
-	}
+	};
 
 	//计算总误差
 	this.totalError = function() {
@@ -58,7 +58,7 @@ var Neural = function() {
 			e[x] = self.squareErr(t[x], o[x]);
 			te += e[x];
 		}
-	}
+	};
 
 	//反向传播第一层
 	this.backward1 = function() {
@@ -69,7 +69,7 @@ var Neural = function() {
 				// console.info('w' + parseInt(5 + x + y * v) + "权重变化: " + w[1][x + y * v] + " => " + nW[1][x + y * v]);
 			}
 		}
-	}
+	};
 
 	//反向传播第二层
 	this.backward2 = function() {
@@ -106,10 +106,8 @@ for (var i = 0; i < 10000; i++) {
 	test.backward1();
 	test.backward2();
 	test.forward();
-	final_o=[].concat(test.o);
+	final_o=test.o;
 	// console.info('预测值变化：'+old_o +" => "+test.o);
 	
 }
 console.info('最终预测值：'+final_o);
-// console.info(te);
-// console.info(nW);
