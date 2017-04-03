@@ -1,4 +1,4 @@
-var Neural = function() {
+var Neural = function () {
 	//神经网络维度
 	var v = 2;
 	//训练目标
@@ -30,17 +30,17 @@ var Neural = function() {
 
 	var self = this;
 	//激活函数
-	this.sigmoid = function(z) {
+	this.sigmoid = function (z) {
 		return 1 / (1 + Math.exp(-z));
 	};
 
 	//平方误差函数
-	this.squareErr = function(target, current) {
+	this.squareErr = function (target, current) {
 		return 0.5 * Math.pow((target - current), 2);
 	};
 
 	//前向传播
-	this.forward = function() {
+	this.forward = function () {
 		//隐含层
 		for (var x = 0; x < i.length; x++) {
 			h[x] = self.sigmoid(i[0] * w[0][x * v] + i[1] * w[0][x * v + 1] + b[0]);
@@ -49,19 +49,21 @@ var Neural = function() {
 		for (var y = 0; y < i.length; y++) {
 			o[y] = self.sigmoid(h[0] * w[1][y * v] + h[1] * w[1][y * v + 1] + b[1]);
 		}
-		self.o=o;
+		self.o = o;
 	};
 
 	//计算总误差
-	this.totalError = function() {
+	this.totalError = function () {
+		te=0;
 		for (var x = 0; x < t.length; x++) {
 			e[x] = self.squareErr(t[x], o[x]);
 			te += e[x];
 		}
+		this.te=te;
 	};
 
 	//反向传播第一层
-	this.backward1 = function() {
+	this.backward1 = function () {
 		for (var y = 0; y < t.length; y++) {
 			for (var x = 0; x < h.length; x++) {
 				var selfEffect = -1 * (t[y] - o[y]) * o[y] * (1 - o[y]) * h[x];
@@ -72,7 +74,7 @@ var Neural = function() {
 	};
 
 	//反向传播第二层
-	this.backward2 = function() {
+	this.backward2 = function () {
 		var f_1 = [];
 		var f_2 = 0;
 		var f_3 = 0;
@@ -98,16 +100,17 @@ var Neural = function() {
 
 
 var test = new Neural();
-var final_o=[];
+var final_o = [];
 for (var i = 0; i < 10000; i++) {
 	test.forward();
-	var old_o=[].concat(test.o);
+	var old_o = [].concat(test.o);
 	test.totalError();
+	console.info('总误差: ' + test.te);
 	test.backward1();
 	test.backward2();
 	test.forward();
-	final_o=test.o;
+	final_o = test.o;
 	// console.info('预测值变化：'+old_o +" => "+test.o);
-	
+
 }
-console.info('最终预测值：'+final_o);
+console.info('最终预测值：' + final_o);
